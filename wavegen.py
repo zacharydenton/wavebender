@@ -18,7 +18,23 @@ def sine_wave(frequency=440.0, framerate=44100, amplitude=0.5):
     '''
     if amplitude > 1.0: amplitude = 1.0
     if amplitude < 0.0: amplitude = 0.0
-    return (int(float(amplitude)*float(MAX_AMPLITUDE) * math.sin(2.0*math.pi*float(frequency)*(float(i)/float(framerate)))) for i in count(0))
+    return (int(float(amplitude)*float(MAX_AMPLITUDE) * \
+                math.sin(2.0*math.pi*float(frequency)*(float(i)/float(framerate)))) \
+            for i in count(0))
+
+def write_wavefile(filename, samples, nchannels, sampwidth, framerate):
+    "Write samples to a wavefile."
+    w = wave.open(filename, 'w')
+    w.setparams((nchannels, sampwidth, framerate, 0, 'NONE', 'not compressed'))
+
+    # split the samples into chunks, 1 second each (to reduce memory consumption)
+    for chunk in grouper(framerate, samples):
+        frames = ''.join(''.join(struct.pack('h', sample) for sample in channels) for channels in chunk)
+        w.writeframes(frames)
+
+    w.close()
+
+    return filename
 
 def main():
     parser = argparse.ArgumentParser()
@@ -31,20 +47,12 @@ def main():
     parser.add_argument('filename', help="The file to generate.")
     args = parser.parse_args()
 
-    w = wave.open(args.filename, 'w')
-    w.setparams((args.channels, args.bits / 8, args.rate, 0, 'NONE', 'not compressed'))
-
     # create a sine wave in every channel and zip the waves together
-    samples = izip(*(islice(sine_wave(args.frequency, args.rate, args.amplitude), args.duration * args.rate) for i in range(args.channels)))
+    samples = izip(*(islice(sine_wave(args.frequency, args.rate, args.amplitude), args.duration * args.rate) \
+                     for i in range(args.channels)))
 
-    # split the samples into chunks, 1 second each (to reduce memory consumption)
-    for chunk in grouper(args.rate, samples):
-        frames = ''.join(''.join(struct.pack('h', sample) for sample in channels) for channels in chunk)
-        w.writeframes(frames)
-
-    w.close()
+    # write the samples to a file
+    write_wavefile(args.filename, samples, args.channels, args.bits / 8, args.rate)
 
 if __name__ == "__main__":
-    #import cProfile
-    #cProfile.run('main()')
     main()
