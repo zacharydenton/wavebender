@@ -24,16 +24,18 @@ def white_noise(amplitude=0.5):
     '''
     Generate random samples.
     '''
-    return (float(amplitude) * (2 * random.random() - 1) for i in count(0))
+    return (float(amplitude) * random.uniform(-1, 1) for i in count(0))
 
 def write_wavefile(filename, samples, nchannels, sampwidth, framerate):
     "Write samples to a wavefile."
     w = wave.open(filename, 'w')
     w.setparams((nchannels, sampwidth, framerate, 0, 'NONE', 'not compressed'))
 
+    max_amplitude = float(int((2 ** (sampwidth * 8)) / 2) - 1)
+
     # split the samples into chunks, 1 second each (to reduce memory consumption)
     for chunk in grouper(framerate, samples):
-        frames = ''.join(''.join(struct.pack('h', sample) for sample in channels) for channels in chunk)
+        frames = ''.join(''.join(struct.pack('h', int(max_amplitude * sample)) for sample in channels) for channels in chunk)
         w.writeframes(frames)
 
     w.close()
@@ -51,17 +53,12 @@ def main():
     parser.add_argument('filename', help="The file to generate.")
     args = parser.parse_args()
 
-    max_amplitude = int((2 ** args.bits) / 2) - 1
+    # each channel is defined by infinite functions which are added to produce a sample.
+    channels = ((sine_wave(args.frequency, args.rate, args.amplitude), white_noise(0.1)) for i in range(args.channels))
 
-    # create a sine wave in every channel and zip the waves together
-    samples = izip(*(islice(imap(lambda s: int(float(max_amplitude) * s), \
-                                 sine_wave(args.frequency, args.rate, args.amplitude)), \
-                            args.duration * args.rate) \
-                     for i in range(args.channels)))
-
-    # add some white noise
-    samples = ([(int(float(max_amplitude) * noise) + sample) for sample in channels] \
-               for channels, noise in izip(samples, white_noise(0.1)))
+    # now we create a generator which computes the samples.
+    # essentially it creates a sequence of the sum of each function at each sample in the file for each channel.
+    samples = islice(izip(*(imap(sum, izip(*channel)) for channel in channels)), args.rate * args.duration)
 
     # write the samples to a file
     write_wavefile(args.filename, samples, args.channels, args.bits / 8, args.rate)
