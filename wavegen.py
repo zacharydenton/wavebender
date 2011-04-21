@@ -48,18 +48,18 @@ def compute_samples(channels, nsamples):
     '''
     return islice(izip(*(imap(sum, izip(*channel)) for channel in channels)), nsamples)
 
-def write_wavefile(filename, samples, nchannels=2, sampwidth=2, framerate=44100):
+def write_wavefile(filename, samples, nframes, nchannels=2, sampwidth=2, framerate=44100):
     "Write samples to a wavefile."
     w = wave.open(filename, 'w')
-    w.setparams((nchannels, sampwidth, framerate, 0, 'NONE', 'not compressed'))
+    w.setparams((nchannels, sampwidth, framerate, nframes, 'NONE', 'not compressed'))
 
     max_amplitude = float(int((2 ** (sampwidth * 8)) / 2) - 1)
 
     # split the samples into chunks, 1 second each (to reduce memory consumption)
     for chunk in grouper(framerate, samples):
         frames = ''.join(''.join(struct.pack('h', int(max_amplitude * sample)) for sample in channels) for channels in chunk)
-        w.writeframes(frames)
-
+        w.writeframesraw(frames)
+    
     w.close()
 
     return filename
