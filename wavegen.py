@@ -82,7 +82,7 @@ def main():
     samples = compute_samples(channels, args.rate * args.time)
 
     # write the samples to a file
-    write_wavefile(args.filename, samples, args.channels, args.bits / 8, args.rate)
+    write_wavefile(args.filename, samples, args.rate * args.time, args.channels, args.bits / 8, args.rate)
 
 if __name__ == "__main__":
     main()

@@ -21,4 +21,4 @@ def waves():
 channels = ((waves(),), (waves(), white_noise(amplitude=0.01),))
 
 samples = compute_samples(channels, 44100 * 60 * 1)
-write_wavefile('damped.wav', samples)
+write_wavefile('damped.wav', samples, 44100 * 60 * 1)

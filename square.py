@@ -11,4 +11,4 @@ def strange_wave(frequency, amplitude=0.5):
 channels = ((strange_wave(1000.0, amplitude=0.1),),)
 
 samples = compute_samples(channels, 44100 * 60 * 1)
-write_wavefile('square.wav', samples, nchannels=1)
+write_wavefile('square.wav', samples, nchannels=1, 44100 * 60 * 1)
