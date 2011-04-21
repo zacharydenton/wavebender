@@ -70,6 +70,19 @@ def write_wavefile(filename, samples, nframes=None, nchannels=2, sampwidth=2, fr
 
     return filename
 
+def write_pcm(f, samples, sampwidth=2, framerate=44100, bufsize=2048):
+    "Write samples as raw PCM data."
+    max_amplitude = float(int((2 ** (sampwidth * 8)) / 2) - 1)
+
+    # split the samples into chunks (to reduce memory consumption and improve performance)
+    for chunk in grouper(bufsize, samples):
+        frames = ''.join(''.join(struct.pack('h', int(max_amplitude * sample)) for sample in channels) for channels in chunk if channels is not None)
+        f.write(frames)
+    
+    f.close()
+
+    return filename
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--channels', help="Number of channels to produce", default=2, type=int)

@@ -42,4 +42,4 @@ except IndexError:
     sys.exit(1)
 
 samples = compute_samples(channels)
-write_wavefile(sys.stdout, samples)
+write_pcm(sys.stdout, samples)
