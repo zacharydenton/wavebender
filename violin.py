@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from wavegen import *
+import sys
 
 def violin(amplitude=0.1):
     # simulates a violin playing G.
@@ -13,4 +14,4 @@ def violin(amplitude=0.1):
 
 channels = (violin(),)
 samples = compute_samples(channels, 44100 * 60 * 1)
-write_wavefile('violin.wav', samples, nchannels=1, 44100 * 60 * 1)
+write_wavefile(sys.stdout, samples, 44100 * 60 * 1, nchannels=1)

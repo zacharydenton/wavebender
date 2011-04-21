@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import sys
 import wave
 import math
 import struct
@@ -82,7 +83,11 @@ def main():
     samples = compute_samples(channels, args.rate * args.time)
 
     # write the samples to a file
-    write_wavefile(args.filename, samples, args.rate * args.time, args.channels, args.bits / 8, args.rate)
+    if args.filename == '-':
+        filename = sys.stdout
+    else:
+        filename = args.filename
+    write_wavefile(filename, samples, args.rate * args.time, args.channels, args.bits / 8, args.rate)
 
 if __name__ == "__main__":
     main()
