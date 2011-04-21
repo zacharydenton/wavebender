@@ -13,13 +13,18 @@ def waves():
     # ACG ACG ACG ACG DCD DCD DCD DCD ...
     return cycle(chain(ncycles(chain(islice(damped_wave(frequency=440.0, amplitude=0.1, length=int(l/4)), l),
                                      islice(damped_wave(frequency=261.63, amplitude=0.1, length=int(l/4)), l),
-                                     islice(damped_wave(frequency=329.63, amplitude=0.1, length=int(l/4)), l)), 4),
+                                     islice(damped_wave(frequency=329.63, amplitude=0.1, length=int(l/4)), l)), 3),
+                       islice(damped_wave(frequency=440.0, amplitude=0.1, length=3*l), 3*l),
                  
                        ncycles(chain(islice(damped_wave(frequency=293.66, amplitude=0.1, length=int(l/4)), l),
                                      islice(damped_wave(frequency=261.63, amplitude=0.1, length=int(l/4)), l),
-                                     islice(damped_wave(frequency=293.66, amplitude=0.1, length=int(l/4)), l)), 4)))
+                                     islice(damped_wave(frequency=293.66, amplitude=0.1, length=int(l/4)), l)), 2),
+                       chain(islice(damped_wave(frequency=293.66, amplitude=0.1, length=int(l/4)), l),
+                             islice(damped_wave(frequency=329.63, amplitude=0.1, length=int(l/4)), l),
+                             islice(damped_wave(frequency=293.66, amplitude=0.1, length=int(l/4)), l)),
+                       islice(damped_wave(frequency=261.63, amplitude=0.1, length=3*l), 3*l)))
 
 channels = ((waves(),), (waves(), white_noise(amplitude=0.01),))
 
-samples = compute_samples(channels, 44100 * 60 * 1)
-write_wavefile(sys.stdout, samples, 44100 * 60 * 1)
+samples = compute_samples(channels, None)
+write_wavefile(sys.stdout, samples, None)

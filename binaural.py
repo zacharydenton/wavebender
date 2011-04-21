@@ -2,8 +2,8 @@
 from wavegen import *
 import sys
 
-channels = ((sine_wave(440.0, amplitude=0.1),),
-            (sine_wave(445.0, amplitude=0.1),))
+channels = ((sine_wave(170.0, amplitude=0.1),),
+            (sine_wave(178.0, amplitude=0.1),))
 
-samples = compute_samples(channels, 44100 * 60 * 5)
-write_wavefile(sys.stdout, samples, 44100 * 60 * 5)
+samples = compute_samples(channels)
+write_wavefile(sys.stdout, samples)
