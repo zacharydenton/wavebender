@@ -19,7 +19,7 @@ def sine_wave(frequency=440.0, framerate=44100, amplitude=0.5):
     period = int(framerate / frequency)
     if amplitude > 1.0: amplitude = 1.0
     if amplitude < 0.0: amplitude = 0.0
-    lookup_table = [float(amplitude) * math.sin(2.0*math.pi*float(frequency)*(float(i%period)/float(framerate))) for i in range(period)]
+    lookup_table = [float(amplitude) * math.sin(2.0*math.pi*float(frequency)*(float(i%period)/float(framerate))) for i in xrange(period)]
     return (lookup_table[i%period] for i in count(0))
 
 def square_wave(frequency=440.0, framerate=44100, amplitude=0.5):
@@ -34,7 +34,7 @@ def square_wave(frequency=440.0, framerate=44100, amplitude=0.5):
 def damped_wave(frequency=440.0, framerate=44100, amplitude=0.5, length=44100):
     if amplitude > 1.0: amplitude = 1.0
     if amplitude < 0.0: amplitude = 0.0
-    return (float(amplitude) * math.exp(-(float(i%length)/float(framerate))) * math.sin(2.0*math.pi*float(frequency)*(float(i)/float(framerate))) for i in count(0))
+    return (math.exp(-(float(i%length)/float(framerate))) * s for i, s in enumerate(sine_wave(frequency, framerate, amplitude)))
 
 def white_noise(amplitude=0.5):
     '''
@@ -95,7 +95,7 @@ def main():
     args = parser.parse_args()
 
     # each channel is defined by infinite functions which are added to produce a sample.
-    channels = ((sine_wave(args.frequency, args.rate, args.amplitude), white_noise(0.1)) for i in range(args.channels))
+    channels = ((sine_wave(args.frequency, args.rate, args.amplitude),) for i in range(args.channels))
 
     # convert the channel functions into waveforms
     samples = compute_samples(channels, args.rate * args.time)

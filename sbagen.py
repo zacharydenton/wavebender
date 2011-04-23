@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import re
 import sys
-from wavegen import *
+from wavebender import *
 from itertools import *
 
 def sbagen_phrase(phrase):
@@ -35,11 +35,10 @@ def sequencer(*seqs):
     '''
     return chain(*(islice(generator, duration) for generator, duration in seqs))
 
-try:
+if sys.argv[1:]:
     channels = sbagen_line(' '.join(sys.argv[1:]))
-except IndexError:
-    print >> sys.stderr, "You must enter an sbagen script."
+else:
     sys.exit(1)
 
 samples = compute_samples(channels)
-write_pcm(sys.stdout, samples)
+write_wavefile(sys.stdout, samples)

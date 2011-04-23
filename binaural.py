@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from wavegen import *
+from wavebender import *
 import sys
 
 channels = ((sine_wave(170.0, amplitude=0.1),),

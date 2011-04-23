@@ -10,7 +10,7 @@ l/r 300/304 plus 100 Hz and 500 Hz carriers without recognizeable Delta
 
 +++ 100+0/10 302+4/10 500+0/10
 '''
-from wavegen import *
+from wavebender import *
 from itertools import *
 import sys
 

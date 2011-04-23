@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-from wavegen import *
+from wavebender import *
 import sys
 
 def violin(amplitude=0.1):
     # simulates a violin playing G.
-    return (sine_wave(400.0, amplitude=0.76*amplitude),
-            sine_wave(800.0, amplitude=0.44*amplitude),
-            sine_wave(1200.0, amplitude=0.32*amplitude),
-            sine_wave(3400.0, amplitude=0.16*amplitude),
-            sine_wave(600.0, amplitude=1.0*amplitude),
-            sine_wave(1000.0, amplitude=0.44*amplitude),
-            sine_wave(1600.0, amplitude=0.32*amplitude))
+    return (damped_wave(400.0, amplitude=0.76*amplitude, length=44100 * 5),
+            damped_wave(800.0, amplitude=0.44*amplitude, length=44100 * 5),
+            damped_wave(1200.0, amplitude=0.32*amplitude, length=44100 * 5),
+            damped_wave(3400.0, amplitude=0.16*amplitude, length=44100 * 5),
+            damped_wave(600.0, amplitude=1.0*amplitude, length=44100 * 5),
+            damped_wave(1000.0, amplitude=0.44*amplitude, length=44100 * 5),
+            damped_wave(1600.0, amplitude=0.32*amplitude, length=44100 * 5))
 
 channels = (violin(),)
 samples = compute_samples(channels, 44100 * 60 * 1)
