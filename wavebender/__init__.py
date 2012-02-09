@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+"""
+An audio synthesis library for Python.
+
+It makes heavy use of the `itertools` module.
+Good luck! (This is a work in progress.)
+"""
 import sys
 import wave
 import math
@@ -6,6 +12,18 @@ import struct
 import random
 import argparse
 from itertools import *
+
+# metadata
+__author__ = 'Zach Denton'
+__author_email__ = 'zacharydenton@gmail.com'
+__version__ = '0.2'
+__url__ = 'http://github.com/zacharydenton/wavebender'
+__longdescr__ = '''
+An audio synthesis library for Python.
+'''
+__classifiers__ = [
+    'Topic :: Multimedia :: Sound/Audio :: Sound Synthesis'
+]
 
 def grouper(n, iterable, fillvalue=None):
     "grouper(3, 'ABCDEFG', 'x') --> ABC DEF Gxx"
