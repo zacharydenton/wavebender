@@ -69,12 +69,12 @@ def compute_samples(channels, nsamples=None):
     '''
     return islice(izip(*(imap(sum, izip(*channel)) for channel in channels)), nsamples)
 
-def write_wavefile(filename, samples, nframes=None, nchannels=2, sampwidth=2, framerate=44100, bufsize=2048):
+def write_wavefile(f, samples, nframes=None, nchannels=2, sampwidth=2, framerate=44100, bufsize=2048):
     "Write samples to a wavefile."
     if nframes is None:
         nframes = -1
 
-    w = wave.open(filename, 'w')
+    w = wave.open(f, 'w')
     w.setparams((nchannels, sampwidth, framerate, nframes, 'NONE', 'not compressed'))
 
     max_amplitude = float(int((2 ** (sampwidth * 8)) / 2) - 1)
@@ -86,8 +86,6 @@ def write_wavefile(filename, samples, nframes=None, nchannels=2, sampwidth=2, fr
     
     w.close()
 
-    return filename
-
 def write_pcm(f, samples, sampwidth=2, framerate=44100, bufsize=2048):
     "Write samples as raw PCM data."
     max_amplitude = float(int((2 ** (sampwidth * 8)) / 2) - 1)
@@ -96,10 +94,8 @@ def write_pcm(f, samples, sampwidth=2, framerate=44100, bufsize=2048):
     for chunk in grouper(bufsize, samples):
         frames = ''.join(''.join(struct.pack('h', int(max_amplitude * sample)) for sample in channels) for channels in chunk if channels is not None)
         f.write(frames)
-    
-    f.close()
 
-    return filename
+    f.close()
 
 def main():
     parser = argparse.ArgumentParser()
