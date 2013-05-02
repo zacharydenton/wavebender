@@ -98,7 +98,7 @@ def write_pcm(f, samples, sampwidth=2, framerate=44100, bufsize=2048):
     f.close()
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(prog="wavebender")
     parser.add_argument('-c', '--channels', help="Number of channels to produce", default=2, type=int)
     parser.add_argument('-b', '--bits', help="Number of bits in each sample", choices=(16,), default=16, type=int)
     parser.add_argument('-r', '--rate', help="Sample rate in Hz", default=44100, type=int)
