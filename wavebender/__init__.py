@@ -30,13 +30,14 @@ def grouper(n, iterable, fillvalue=None):
     args = [iter(iterable)] * n
     return izip_longest(fillvalue=fillvalue, *args)
 
-def sine_wave(frequency=440.0, framerate=44100, amplitude=0.5):
+def sine_wave(frequency=440.0, framerate=44100, amplitude=0.5,
+        skip_frame=0):
     '''
     Generate a sine wave at a given frequency of infinite length.
     '''
     if amplitude > 1.0: amplitude = 1.0
     if amplitude < 0.0: amplitude = 0.0
-    for i in count(0):
+    for i in count(skip_frame):
         sine = math.sin(2.0 * math.pi * float(frequency) * (float(i) / float(framerate)))
         yield float(amplitude) * sine
 
