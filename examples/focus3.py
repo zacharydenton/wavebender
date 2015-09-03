@@ -12,7 +12,6 @@ l/r 300/304 plus 100 Hz and 500 Hz carriers without recognizeable Delta
 '''
 from wavebender import *
 from itertools import *
-import sys
 
 noise = cycle(islice(white_noise(amplitude=0.006), 44100))
 
@@ -20,4 +19,4 @@ channels = ((sine_wave(300.0, amplitude=0.1), sine_wave(100.0, amplitude=0.1), s
             (sine_wave(304.0, amplitude=0.1), sine_wave(100.0, amplitude=0.1), sine_wave(500.0, amplitude=0.1), noise))
 
 samples = compute_samples(channels)
-write_wavefile(sys.stdout, samples)
+write_wavefile(stdout, samples)

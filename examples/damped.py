@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from wavebender import *
 from itertools import *
-import sys
 
 def ncycles(iterable, n):
     "Returns the sequence elements n times"
@@ -26,4 +25,4 @@ def waves():
 channels = ((waves(),), (waves(), white_noise(amplitude=0.001),))
 
 samples = compute_samples(channels, None)
-write_wavefile(sys.stdout, samples, None)
+write_wavefile(stdout, samples, None)

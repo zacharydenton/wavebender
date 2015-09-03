@@ -6,17 +6,29 @@ It makes heavy use of the `itertools` module.
 Good luck! (This is a work in progress.)
 """
 import sys
-import wave
 import math
+import wave
 import struct
 import random
 import argparse
-from itertools import *
+from itertools import count, islice
+
+try:
+    from itertools import zip_longest
+except ImportError:
+    from itertools import imap as map
+    from itertools import izip as zip
+    from itertools import izip_longest as zip_longest
+
+try:
+    stdout = sys.stdout.buffer
+except AttributeError:
+    stdout = sys.stdout
 
 # metadata
 __author__ = 'Zach Denton'
 __author_email__ = 'zacharydenton@gmail.com'
-__version__ = '0.2'
+__version__ = '0.3'
 __url__ = 'http://github.com/zacharydenton/wavebender'
 __longdescr__ = '''
 An audio synthesis library for Python.
@@ -28,7 +40,7 @@ __classifiers__ = [
 def grouper(n, iterable, fillvalue=None):
     "grouper(3, 'ABCDEFG', 'x') --> ABC DEF Gxx"
     args = [iter(iterable)] * n
-    return izip_longest(fillvalue=fillvalue, *args)
+    return zip_longest(fillvalue=fillvalue, *args)
 
 def sine_wave(frequency=440.0, framerate=44100, amplitude=0.5,
         skip_frame=0):
@@ -68,21 +80,21 @@ def compute_samples(channels, nsamples=None):
     essentially it creates a sequence of the sum of each function in the channel
     at each sample in the file for each channel.
     '''
-    return islice(izip(*(imap(sum, izip(*channel)) for channel in channels)), nsamples)
+    return islice(zip(*(map(sum, zip(*channel)) for channel in channels)), nsamples)
 
 def write_wavefile(f, samples, nframes=None, nchannels=2, sampwidth=2, framerate=44100, bufsize=2048):
     "Write samples to a wavefile."
     if nframes is None:
-        nframes = -1
+        nframes = 0
 
-    w = wave.open(f, 'w')
+    w = wave.open(f, 'wb')
     w.setparams((nchannels, sampwidth, framerate, nframes, 'NONE', 'not compressed'))
 
     max_amplitude = float(int((2 ** (sampwidth * 8)) / 2) - 1)
 
     # split the samples into chunks (to reduce memory consumption and improve performance)
     for chunk in grouper(bufsize, samples):
-        frames = ''.join(''.join(struct.pack('h', int(max_amplitude * sample)) for sample in channels) for channels in chunk if channels is not None)
+        frames = b''.join(b''.join(struct.pack('h', int(max_amplitude * sample)) for sample in channels) for channels in chunk if channels is not None)
         w.writeframesraw(frames)
     
     w.close()
@@ -93,7 +105,7 @@ def write_pcm(f, samples, sampwidth=2, framerate=44100, bufsize=2048):
 
     # split the samples into chunks (to reduce memory consumption and improve performance)
     for chunk in grouper(bufsize, samples):
-        frames = ''.join(''.join(struct.pack('h', int(max_amplitude * sample)) for sample in channels) for channels in chunk if channels is not None)
+        frames = b''.join(b''.join(struct.pack('h', int(max_amplitude * sample)) for sample in channels) for channels in chunk if channels is not None)
         f.write(frames)
 
     f.close()
@@ -117,10 +129,10 @@ def main():
 
     # write the samples to a file
     if args.filename == '-':
-        filename = sys.stdout
+        filename = stdout
     else:
         filename = args.filename
-    write_wavefile(filename, samples, args.rate * args.time, args.channels, args.bits / 8, args.rate)
+    write_wavefile(filename, samples, args.rate * args.time, args.channels, args.bits // 8, args.rate)
 
 if __name__ == "__main__":
     main()

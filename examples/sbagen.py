@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import re
-import sys
 from wavebender import *
 from itertools import *
 
@@ -41,4 +40,4 @@ else:
     sys.exit(1)
 
 samples = compute_samples(channels)
-write_wavefile(sys.stdout, samples)
+write_wavefile(stdout, samples)
