@@ -7,7 +7,7 @@ Good luck! (This is a work in progress.)
 """
 import sys
 import math
-import wave
+from . import wave
 import struct
 import random
 import argparse
