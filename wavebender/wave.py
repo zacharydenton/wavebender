@@ -469,7 +469,7 @@ class Wave_write:
     def _write_header(self, initlength):
         self._file.write(b'RIFF')
         if not self._nframes:
-            self._nframes = initlength / (self._nchannels * self._sampwidth)
+            self._nframes = int(initlength / (self._nchannels * self._sampwidth))
         self._datalength = self._nframes * self._nchannels * self._sampwidth
         try:
             self._form_length_pos = self._file.tell()
