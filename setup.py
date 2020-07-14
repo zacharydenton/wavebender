@@ -12,9 +12,10 @@ setup (
 
     author = wavebender.__author__,
     author_email = wavebender.__author_email__,
-    version = wavebender.__version__,
+    version = "0.3",
     url = wavebender.__url__,
     long_description = wavebender.__longdescr__,
     classifiers = wavebender.__classifiers__,
     packages = ['wavebender',],
+    install_requires=[]
 )
